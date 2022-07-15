@@ -5,7 +5,7 @@ plugins {
     id("org.openjfx.javafxplugin") version "0.0.13"
     application
     //id("com.gluonhq.gluonfx-gradle-plugin") version "1.0.14"
-    id("com.gluonhq.gluonfx-gradle-plugin") version "1.0.9" // 22.0
+    id("com.gluonhq.gluonfx-gradle-plugin") version "1.0.9"
 }
 
 group = "com.dxfeed"
@@ -80,6 +80,11 @@ val toReflect = listOf(
         //qd-rmi
 //        "com.devexperts.rmi.impl.RMIConnectorInitializer.AdapterFactory",
 
+        //misc
+        "java.net.InetAddress",
+        "java.net.Inet6Address",
+        "java.net.SocksSocketImpl",
+        "java.net.PlainSocketImpl",
         )
 
 
@@ -92,4 +97,8 @@ gluonfx {
     graalvmHome = graalVMHome
     reflectionList = toReflect
     jniList = toReflect
+    //compilerArgs = listOf("--initialize-at-build-time=sun.nio.ch.Net.initIDs")
+    //compilerArgs = listOf("--initialize-at-build-time=java.net.Inet6Address")
+    //compilerArgs = listOf("--initialize-at-build-time=java.net.SocksSocketImpl")
+    //compilerArgs = listOf("--trace-class-initialization=java.net.Inet6Address")
 }
