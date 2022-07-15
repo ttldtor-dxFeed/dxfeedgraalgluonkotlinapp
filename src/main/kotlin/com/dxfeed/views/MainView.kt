@@ -13,7 +13,8 @@ import javafx.scene.layout.VBox
 class MainView() : View() {
     private val logger = Logger(5000)
     private val qdService = QDService(logger)
-    private val addressText = TextField("demo.dxfeed.com:7300")
+    //private val addressText = TextField("demo.dxfeed.com:7300")
+    private val addressText = TextField("208.93.103.170:7300")
     private val testQuoteLastEventPromiseButton = Button("QuoteLastEventPromise")
     private val controls = HBox(5.0, addressText, testQuoteLastEventPromiseButton)
     private val logView = ListView(logger.logObservableList)

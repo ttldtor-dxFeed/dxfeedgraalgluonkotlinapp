@@ -9,19 +9,21 @@ https://www.graalvm.org/
 - GraalVM bundle from the https://github.com/gluonhq/graal/releases/
 - OpenJDK 11
 
+Please use 22.0 version of a Gluon GraalVM and com.gluonhq.gluonfx-gradle-plugin 1.0.9
+
 ## How to build
 
 ### Linux:
 
 ```shell
-export GRAALVM_HOME=/path/to/graalvm-svm-java11-linux-gluon-linux-gluon-22.1.0.1-Final
+export GRAALVM_HOME=/path/to/graalvm-svm-java11-linux-gluon-22.0.0.2-Final
 ./gradlew clean build
 ```
 
 ### Linux Native Build
 
 ```shell
-export GRAALVM_HOME=/path/to/graalvm-svm-java11-linux-gluon-linux-gluon-22.1.0.1-Final
+export GRAALVM_HOME=/path/to/graalvm-svm-java11-linux-gluon-22.0.0.2-Final
 ./gradlew clean build nativeBuild
 ```
 

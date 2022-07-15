@@ -4,7 +4,8 @@ plugins {
     kotlin("jvm") version "1.7.10"
     id("org.openjfx.javafxplugin") version "0.0.13"
     application
-    id("com.gluonhq.gluonfx-gradle-plugin") version "1.0.14"
+    //id("com.gluonhq.gluonfx-gradle-plugin") version "1.0.14"
+    id("com.gluonhq.gluonfx-gradle-plugin") version "1.0.9" // 22.0
 }
 
 group = "com.dxfeed"
@@ -36,6 +37,8 @@ tasks.withType<KotlinCompile> {
 }
 
 val graalVMHome = System.getenv("GRAALVM_HOME") ?: (gradle.gradleUserHomeDir.parent + "/GraalVM")
+
+println("!!!!GRAALVM_HOME: $graalVMHome !!!")
 
 application {
     mainClass.set("com.dxfeed.DxFeedGraalGluonKotlinApp")
@@ -77,8 +80,6 @@ val toReflect = listOf(
         //qd-rmi
 //        "com.devexperts.rmi.impl.RMIConnectorInitializer.AdapterFactory",
 
-        //misc
-        "java.net.Inet6Address",
         )
 
 
@@ -91,7 +92,4 @@ gluonfx {
     graalvmHome = graalVMHome
     reflectionList = toReflect
     jniList = toReflect
-    //compilerArgs = listOf("--initialize-at-build-time=sun.nio.ch.Net.initIDs")
-    //compilerArgs = listOf("--initialize-at-build-time=java.net.Inet6Address")
-    //compilerArgs = listOf("--trace-class-initialization=java.net.Inet6Address")
 }
