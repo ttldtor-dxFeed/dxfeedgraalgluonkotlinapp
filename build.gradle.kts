@@ -47,38 +47,84 @@ application {
 }
 
 val toReflect = listOf(
-        //@Service, @ServiceProvider, @SupersedesService
+        //@Service, @ServiceProvider, @SupersedesService, @SpecificSubscriptionFilter
         //dxlib
         "com.devexperts.services.Service",
         "com.devexperts.services.ServiceProvider",
         "com.devexperts.services.SupersedesService",
         "com.devexperts.services.Services",
+        "com.devexperts.services.StartupService",
+        "com.devexperts.services.OverrideURLClassLoader",
 
-        //dxfeed-iml
+        //dxfeed-api
+        "com.dxfeed.api.DXEndpoint.Builder",
+
+        //dxfeed-impl
+        "com.dxfeed.api.impl.DXEndpointImpl.BuilderImpl",
+        "com.dxfeed.api.impl.DXEndpointImpl.BuilderRMIImpl",
         "com.dxfeed.api.impl.DXFeedScheme",
+        "com.dxfeed.api.impl.FilterFactoryImpl",
+        "com.dxfeed.api.impl.HistorySubscriptionFilterImpl",
+        "com.dxfeed.event.candle.CandleFactoryImpl",
+        "com.dxfeed.event.market.MarketFactoryImpl",
+        "com.dxfeed.event.misc.MiscFactoryImpl",
+        "com.dxfeed.event.option.OptionFactoryImpl",
+
+        //dxfeed-ipf-filter
+        "com.dxfeed.ipf.filter.IPFFilterFactory",
+
+        //dxfeed-scheme
+        "com.dxfeed.scheme.impl.DXSchemeFactory",
+
+        //dxfeed-webservice-impl
+        "com.dxfeed.webservice.comet.DataService",
+
+        //qd-core
+        "com.devexperts.qd.DataScheme",
+        "com.devexperts.qd.DataSchemeFactory",
+        "com.devexperts.qd.SubscriptionFilterFactory",
+        "com.devexperts.qd.qtp.FieldReplacer.Factory",
+        "com.devexperts.qd.qtp.QDEndpoint.Builder",
+        "com.devexperts.qd.qtp.SubscriptionFilterFactory",
+        "com.devexperts.qd.qtp.auth.ChannelShapersFactory",
+        "com.devexperts.qd.qtp.auth.ConsoleLoginHandlerFactory",
+        "com.devexperts.qd.qtp.auth.QDAuthRealmFactory",
+        "com.devexperts.qd.qtp.auth.QDLoginHandlerFactory",
+        "com.devexperts.qd.qtp.fieldreplacer.SetFieldReplacer.Factory",
+        "com.devexperts.qd.qtp.fieldreplacer.TimeFieldReplacer.Factory",
+        "com.devexperts.qd.spi.QDFilterFactory",
+
+        //qd-rmi
+        "com.devexperts.rmi.RMIEndpoint.Builder",
+        "com.devexperts.rmi.impl.DefaultLoadBalancerFactory",
+        "com.devexperts.rmi.task.RMILoadBalancerFactory",
+        "com.devexperts.rmi.security.SecurityController",
 
         //@Configurable
         "com.devexperts.connector.proto.Configurable",
         "com.devexperts.connector.proto.ConfigurableObject",
 
-        //proto/codecs
+        //proto
         "com.devexperts.connector.proto.ApplicationConnectionFactory",
         "com.devexperts.connector.codec.CodecConnectionFactory",
 //        "com.devexperts.connector.codec.delayed.DelayedConnectionFactory",
         "com.devexperts.connector.codec.shaped.ShapedConnectionFactory",
 
-        //qd-core
-        "com.devexperts.qd.qtp.AgentAdapter",
-//        "com.devexperts.qd.qtp.AgentAdapter.Factory",
-//        "com.devexperts.qd.qtp.DistributorAdapter.Factory",
-//        "com.devexperts.qd.qtp.MessageAdapter.AbstractFactory",
-        "com.devexperts.qd.qtp.MessageAdapterConnectionFactory",
-
         //proto-ssl
         "com.devexperts.connector.codec.ssl.SSLConnectionFactory",
 
+        //qd-core
+        "com.devexperts.qd.qtp.AgentAdapter",
+        "com.devexperts.qd.qtp.AgentAdapter.Factory",
+        "com.devexperts.qd.qtp.DistributorAdapter",
+        "com.devexperts.qd.qtp.DistributorAdapter.Factory",
+        "com.devexperts.qd.qtp.MessageAdapter",
+        "com.devexperts.qd.qtp.MessageAdapter.AbstractFactory",
+        "com.devexperts.qd.qtp.MessageAdapterConnectionFactory",
+
         //qd-rmi
-//        "com.devexperts.rmi.impl.RMIConnectorInitializer.AdapterFactory",
+        "com.devexperts.rmi.impl.RMIConnectorInitializer",
+        "com.devexperts.rmi.impl.RMIConnectorInitializer.AdapterFactory",
 
         //misc
         "java.net.InetAddress",
@@ -97,6 +143,7 @@ gluonfx {
     graalvmHome = graalVMHome
     reflectionList = toReflect
     jniList = toReflect
+    compilerArgs = listOf("--allow-incomplete-classpath")
     //compilerArgs = listOf("--initialize-at-build-time=sun.nio.ch.Net.initIDs")
     //compilerArgs = listOf("--initialize-at-build-time=java.net.Inet6Address")
     //compilerArgs = listOf("--initialize-at-build-time=java.net.SocksSocketImpl")
