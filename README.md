@@ -36,3 +36,6 @@ export GRAALVM_HOME=/path/to/graalvm-svm-java11-linux-gluon-linux-gluon-22.1.0.1
 ```
 ./gradlew nativeRun
 ```
+
+Also, you can create iOS\Android packages and install them.
+See: https://github.com/gluonhq/gluonfx-gradle-plugin
