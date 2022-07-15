@@ -125,15 +125,7 @@ val toReflect = listOf(
         //qd-rmi
         "com.devexperts.rmi.impl.RMIConnectorInitializer",
         "com.devexperts.rmi.impl.RMIConnectorInitializer.AdapterFactory",
-
-        //misc
-        "java.net.InetAddress",
-        "java.net.Inet6Address",
-        "java.net.SocksSocketImpl",
-        "java.net.PlainSocketImpl",
         )
-
-
 
 gluonfx {
     // target = "ios" // Uncomment to enable iOS
@@ -144,8 +136,4 @@ gluonfx {
     reflectionList = toReflect
     jniList = toReflect
     compilerArgs = listOf("--allow-incomplete-classpath")
-    //compilerArgs = listOf("--initialize-at-build-time=sun.nio.ch.Net.initIDs")
-    //compilerArgs = listOf("--initialize-at-build-time=java.net.Inet6Address")
-    //compilerArgs = listOf("--initialize-at-build-time=java.net.SocksSocketImpl")
-    //compilerArgs = listOf("--trace-class-initialization=java.net.Inet6Address")
 }
