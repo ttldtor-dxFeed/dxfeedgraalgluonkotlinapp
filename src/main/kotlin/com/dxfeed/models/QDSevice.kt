@@ -27,7 +27,7 @@ class QDService(private val logger: Logger) {
                 }
     }
 
-    suspend fun testQuoteSubscription(address: String, symbols: List<String>) = withContext(Dispatchers.IO) {
+    suspend fun testQuoteSubscription(address: String, symbols: List<String>, timeout: Long) = withContext(Dispatchers.IO) {
         logger.log("QDService: QuoteSub: Connecting")
         DXEndpoint.newBuilder()
                 .build()
@@ -40,7 +40,7 @@ class QDService(private val logger: Logger) {
                         }
                         sub.addSymbols(symbols)
 
-                        delay(60000)
+                        delay(timeout)
                         logger.log("QDService: QuoteSub: Disconnecting")
                     }
                 }

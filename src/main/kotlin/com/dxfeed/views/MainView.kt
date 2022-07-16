@@ -43,7 +43,7 @@ class LogViewListCell(list: ListView<String>) : ListCell<String>() {
 }
 
 @OptIn(DelicateCoroutinesApi::class)
-class MainView() : View() {
+class MainView : View() {
     private val logger = Logger(5000)
     private val qdService = QDService(logger)
 
@@ -75,7 +75,7 @@ class MainView() : View() {
 
         testQuoteSubscriptionButton.onAction = EventHandler {
             GlobalScope.launch(Dispatchers.JavaFx) {
-                qdService.testQuoteSubscription(addressText.text, listOf("AAPL"))
+                qdService.testQuoteSubscription(addressText.text, listOf("AAPL"), 20)
             }
         }
     }
