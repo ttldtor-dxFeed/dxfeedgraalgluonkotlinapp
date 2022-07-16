@@ -25,6 +25,8 @@ dependencies {
     testImplementation(kotlin("test"))
     implementation("com.gluonhq:charm-glisten:6.1.1")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-javafx:1.6.4")
     implementation(fileTree(mapOf("dir" to "lib", "include" to listOf("*.jar"))))
 }
 
@@ -125,6 +127,11 @@ val toReflect = listOf(
         //qd-rmi
         "com.devexperts.rmi.impl.RMIConnectorInitializer",
         "com.devexperts.rmi.impl.RMIConnectorInitializer.AdapterFactory",
+
+        //misc
+
+        //kotlin.random.Random
+        "kotlin.internal.jdk8.JDK8PlatformImplementations"
         )
 
 gluonfx {

@@ -2,7 +2,11 @@ package com.dxfeed.models
 
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList
-import java.time.ZoneOffset
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.javafx.JavaFx
+import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
@@ -10,15 +14,14 @@ class Logger(private val logSize: Int) {
     var logObservableList: ObservableList<String> = FXCollections.observableArrayList()
         private set
 
-    private fun now(): String {
-        return ZonedDateTime.now(ZoneOffset.UTC).format(DateTimeFormatter.ISO_LOCAL_TIME)
-    }
-
+    @OptIn(DelicateCoroutinesApi::class)
     fun log(string: String) {
-        if (logObservableList.size == logSize) {
-            logObservableList.removeAt(logSize - 1)
-        }
+        GlobalScope.launch(Dispatchers.JavaFx) {
+            if (logObservableList.size == logSize) {
+                logObservableList.removeAt(logSize - 1)
+            }
 
-        logObservableList.add(0, "${now()} > $string")
+            logObservableList.add(0, "${ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME)} > $string")
+        }
     }
 }

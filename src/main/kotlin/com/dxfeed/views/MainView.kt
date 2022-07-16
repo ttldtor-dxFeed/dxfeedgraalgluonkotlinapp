@@ -12,6 +12,11 @@ import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
 import javafx.scene.text.Text
 import javafx.util.Callback
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.javafx.JavaFx
+import kotlinx.coroutines.launch
 
 class LogViewListCell(list: ListView<String>) : ListCell<String>() {
     init {
@@ -37,14 +42,17 @@ class LogViewListCell(list: ListView<String>) : ListCell<String>() {
     }
 }
 
+@OptIn(DelicateCoroutinesApi::class)
 class MainView() : View() {
     private val logger = Logger(5000)
     private val qdService = QDService(logger)
 
     private val addressText = TextField("demo.dxfeed.com:7300")
+
     //private val addressText = TextField("208.93.103.170:7300")
-    private val testQuoteLastEventPromiseButton = Button("QuoteLastEventPromise")
-    private val controls = HBox(5.0, addressText, testQuoteLastEventPromiseButton)
+    private val lastQuoteByPromiseButton = Button("LastQuoteByPromise")
+    private val testQuoteSubscriptionButton = Button("TestQuoteSubscription")
+    private val controls = HBox(5.0, addressText, lastQuoteByPromiseButton, testQuoteSubscriptionButton)
     private val logView = ListView(logger.logObservableList)
     private val mainLayout = VBox(10.0, controls, logView)
 
@@ -58,11 +66,17 @@ class MainView() : View() {
 
         logger.log("Initialization")
 
-        testQuoteLastEventPromiseButton.onAction = EventHandler {
-            logger.log("QuoteLastEventPromise: started")
-            val quote = qdService.testQuoteLastEventPromise(addressText.text, "AAPL", 20)
-            logger.log("QuoteLastEventPromise: " + quote?.toString())
-            logger.log("QuoteLastEventPromise: finished")
+        lastQuoteByPromiseButton.onAction = EventHandler {
+            logger.log("LastQuoteByPromise: started")
+            val quote = qdService.getLastQuoteByPromise(addressText.text, "AAPL", 20)
+            logger.log("LastQuoteByPromise: " + quote?.toString())
+            logger.log("LastQuoteByPromise: finished")
+        }
+
+        testQuoteSubscriptionButton.onAction = EventHandler {
+            GlobalScope.launch(Dispatchers.JavaFx) {
+                qdService.testQuoteSubscription(addressText.text, listOf("AAPL"))
+            }
         }
     }
 }
