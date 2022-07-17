@@ -8,7 +8,7 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
 class QDService(private val logger: Logger) {
-    fun getLastQuoteByPromise(address: String, symbol: String, timeout: Long): Quote? {
+    suspend fun getLastQuoteByPromise(address: String, symbol: String, timeout: Long): Quote? = withContext(Dispatchers.IO) {
         DXEndpoint.newBuilder()
                 .build()
                 .connect(address).use { endpoint ->
@@ -19,10 +19,10 @@ class QDService(private val logger: Logger) {
                         if (!promise.awaitWithoutException(timeout, TimeUnit.SECONDS)) {
                             logger.log("QDService: getLastQuoteByPromise: timeout")
 
-                            return null
+                            return@withContext null
                         }
 
-                        return promise.result
+                        return@withContext promise.result
                     }
                 }
     }
@@ -31,8 +31,8 @@ class QDService(private val logger: Logger) {
         logger.log("QDService: QuoteSub: Connecting")
         DXEndpoint.newBuilder()
                 .build()
-                .connect(address).use {endpoint ->
-                    endpoint.feed.createSubscription(Quote::class.java).use {sub ->
+                .connect(address).use { endpoint ->
+                    endpoint.feed.createSubscription(Quote::class.java).use { sub ->
                         sub.addEventListener { items ->
                             for (item in items) {
                                 logger.log("QDService: QuoteSub: $item")
@@ -40,7 +40,8 @@ class QDService(private val logger: Logger) {
                         }
                         sub.addSymbols(symbols)
 
-                        delay(timeout)
+                        delay(timeout * 1000)
+
                         logger.log("QDService: QuoteSub: Disconnecting")
                     }
                 }

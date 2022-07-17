@@ -24,8 +24,30 @@ export GRAALVM_HOME=/path/to/graalvm-svm-java11-linux-gluon-22.0.0.2-Final
 
 ```shell
 export GRAALVM_HOME=/path/to/graalvm-svm-java11-linux-gluon-22.0.0.2-Final
-./gradlew clean build nativeBuild
+./gradlew clean build nativeBuild -PbuildProfile=android
 ```
+
+### MacOS Native Build
+
+```shell
+export GRAALVM_HOME=/path/to/graalvm-svm-java11-linux-gluon-22.0.0.2-Final
+./gradlew clean build nativeBuild -PbuildProfile=ios
+```
+
+### Win Native Build (PowerShell)
+
+```shell
+$env:GRAALVM_HOME = '/path/to/graalvm-svm-java11-linux-gluon-22.0.0.2-Final'
+./gradlew clean build nativeBuild -PbuildProfile=android
+```
+
+### Win Native Build (cmd)
+
+```shell
+set GRAALVM_HOME='/path/to/graalvm-svm-java11-linux-gluon-22.0.0.2-Final'
+gradlew clean build nativeBuild -PbuildProfile=android
+```
+
 
 ## How to run
 
@@ -33,10 +55,21 @@ export GRAALVM_HOME=/path/to/graalvm-svm-java11-linux-gluon-22.0.0.2-Final
 ./gradlew run
 ```
 
-### Native run
+### Native package + install + run
 
+```shell
+./gradlew nativePackage nativeInstall nativeRun -PbuildProfile=android
 ```
-./gradlew nativeRun
+
+```shell
+./gradlew nativePackage nativeInstall nativeRun -PbuildProfile=ios
+```
+
+### SUPER COMBO (rebuild + native build + package + install + run)
+
+```shell
+export GRAALVM_HOME=/path/to/graalvm-svm-java11-linux-gluon-22.0.0.2-Final
+./gradlew clean build nativeBuild nativePackage nativeInstall nativeRun -PbuildProfile=android
 ```
 
 Also, you can create iOS\Android packages and install them.

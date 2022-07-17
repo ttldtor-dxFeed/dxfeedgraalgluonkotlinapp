@@ -67,10 +67,12 @@ class MainView : View() {
         logger.log("Initialization")
 
         lastQuoteByPromiseButton.onAction = EventHandler {
-            logger.log("LastQuoteByPromise: started")
-            val quote = qdService.getLastQuoteByPromise(addressText.text, "AAPL", 20)
-            logger.log("LastQuoteByPromise: " + quote?.toString())
-            logger.log("LastQuoteByPromise: finished")
+            GlobalScope.launch(Dispatchers.JavaFx) {
+                logger.log("LastQuoteByPromise: started")
+                val quote = qdService.getLastQuoteByPromise(addressText.text, "AAPL", 20)
+                logger.log("LastQuoteByPromise: " + quote?.toString())
+                logger.log("LastQuoteByPromise: finished")
+            }
         }
 
         testQuoteSubscriptionButton.onAction = EventHandler {

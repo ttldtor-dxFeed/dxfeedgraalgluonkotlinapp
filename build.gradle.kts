@@ -134,9 +134,13 @@ val toReflect = listOf(
         "kotlin.internal.jdk8.JDK8PlatformImplementations"
         )
 
+val buildProfile: String? by project
+
 gluonfx {
     // target = "ios" // Uncomment to enable iOS
-    target = "android" // Uncomment to enable Android
+    //target = "android" // Uncomment to enable Android
+
+    target = buildProfile ?: "host"
     attachConfig.version = "4.0.9"
     attachConfig.services("display", "lifecycle", "statusbar", "storage")
     graalvmHome = graalVMHome
