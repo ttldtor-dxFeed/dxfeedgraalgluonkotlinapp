@@ -135,7 +135,7 @@ val toReflect = listOf(
         "kotlin.internal.jdk8.JDK8PlatformImplementations",
 
         "com.devexperts.util.UnsafeHolder",
-        )
+)
 
 val buildProfile: String? by project
 
@@ -149,6 +149,11 @@ gluonfx {
     graalvmHome = graalVMHome
     reflectionList = toReflect
     jniList = toReflect
-    compilerArgs = listOf("--allow-incomplete-classpath", "--add-opens java.base/jdk.internal.misc=ALL-UNNAMED")
-    runtimeArgs = listOf("--add-opens java.base/jdk.internal.misc=ALL-UNNAMED")
+    compilerArgs = listOf("--allow-incomplete-classpath",
+            "--add-opens java.base/jdk.internal.misc=ALL-UNNAMED",
+            "--add-exports=java.base/jdk.internal.misc=ALL-UNNAMED",
+            "--add-exports=java.base/jdk.internal.vm.annotation=com.devexperts.qd")
+    runtimeArgs = listOf("--add-opens java.base/jdk.internal.misc=ALL-UNNAMED",
+            "--add-exports=java.base/jdk.internal.misc=ALL-UNNAMED", "" +
+            "--add-exports=java.base/jdk.internal.vm.annotation=com.devexperts.qd")
 }
