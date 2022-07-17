@@ -22,6 +22,7 @@ javafx {
 }
 
 dependencies {
+    implementation("org.junit.jupiter:junit-jupiter:5.8.1")
     testImplementation(kotlin("test"))
     implementation("com.gluonhq:charm-glisten:6.1.1")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")

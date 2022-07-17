@@ -1,16 +1,16 @@
 package com.dxfeed.views
 
+import com.dxfeed.extensions.splitSymbols
 import com.dxfeed.models.Logger
 import com.dxfeed.models.QDService
 import com.gluonhq.charm.glisten.mvc.View
 import javafx.event.EventHandler
 import javafx.scene.control.Button
-import javafx.scene.control.ListCell
+import javafx.scene.control.Label
 import javafx.scene.control.ListView
 import javafx.scene.control.TextField
-import javafx.scene.layout.HBox
+import javafx.scene.layout.GridPane
 import javafx.scene.layout.VBox
-import javafx.scene.text.Text
 import javafx.util.Callback
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.Dispatchers
@@ -18,48 +18,54 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.javafx.JavaFx
 import kotlinx.coroutines.launch
 
-class LogViewListCell(list: ListView<String>) : ListCell<String>() {
-    init {
-        val text = Text()
-        text.wrappingWidthProperty().bind(list.widthProperty().subtract(15))
-        text.textProperty().bind(itemProperty())
-
-        prefWidth = 0.0
-        graphic = text
-    }
-
-    override fun updateItem(item: String?, empty: Boolean) {
-        isWrapText = true
-
-        super.updateItem(item, empty)
-
-        if (empty || item == null) {
-            text = null
-            graphic = null
-        } else {
-            text = item
-        }
-    }
-}
-
 @OptIn(DelicateCoroutinesApi::class)
 class MainView : View() {
     private val logger = Logger(5000)
     private val qdService = QDService(logger)
 
+
+    private val addressLabel = Label("Address:")
     private val addressText = TextField("demo.dxfeed.com:7300")
 
-    //private val addressText = TextField("208.93.103.170:7300")
+    private val symbolsLabel = Label("Symbol(s):")
+    private val symbolsText = TextField("AAPL, IBM")
+
+    private val timeoutLabel = Label("Timeout (sec)\n0 -- Inf/default):")
+    private val timeoutText = TextField("0")
+
+    private val configGrid = GridPane()
+
     private val lastQuoteByPromiseButton = Button("LastQuoteByPromise")
     private val testQuoteSubscriptionButton = Button("TestQuoteSubscription")
-    private val controls = HBox(5.0, addressText, lastQuoteByPromiseButton, testQuoteSubscriptionButton)
+    private val controls = VBox(5.0, lastQuoteByPromiseButton, testQuoteSubscriptionButton)
+
     private val logView = ListView(logger.logObservableList)
-    private val mainLayout = VBox(10.0, controls, logView)
+    private val mainLayout = VBox(10.0, configGrid, controls, logView)
 
     init {
+        configGrid.addRow(0, addressLabel, addressText)
+        configGrid.addRow(1, symbolsLabel, symbolsText)
+        configGrid.addRow(2, timeoutLabel, timeoutText)
+
+        for (rc in configGrid.rowConstraints) {
+            rc.isFillHeight = true
+        }
+
+        timeoutLabel.style = "-fx-padding: -0.25em 0em -0.15em 0em;"
+
         addressText.prefColumnCount = 20
+        symbolsText.prefColumnCount = 20
+        timeoutText.prefColumnCount = 20
+
+        for (b in listOf(lastQuoteByPromiseButton, testQuoteSubscriptionButton)) {
+            b.prefWidth = 200.0
+            b.prefHeight = 28.0
+            b.style = "-fx-padding: -0.25em 0em -0.15em 0em;"
+        }
+
         center = mainLayout
         logView.prefWidth = prefWidth - 5
+
         logView.cellFactory = Callback {
             LogViewListCell(logView)
         }
@@ -69,7 +75,8 @@ class MainView : View() {
         lastQuoteByPromiseButton.onAction = EventHandler {
             GlobalScope.launch(Dispatchers.JavaFx) {
                 logger.log("LastQuoteByPromise: started")
-                val quote = qdService.getLastQuoteByPromise(addressText.text, "AAPL", 20)
+                val quote = qdService.getLastQuoteByPromise(addressText.text, symbolsText.text.splitSymbols()[0],
+                        timeoutText.text.toLongOrNull() ?: 20)
                 logger.log("LastQuoteByPromise: " + quote?.toString())
                 logger.log("LastQuoteByPromise: finished")
             }
@@ -77,7 +84,8 @@ class MainView : View() {
 
         testQuoteSubscriptionButton.onAction = EventHandler {
             GlobalScope.launch(Dispatchers.JavaFx) {
-                qdService.testQuoteSubscription(addressText.text, listOf("AAPL"), 20)
+                qdService.testQuoteSubscription(addressText.text, symbolsText.text.splitSymbols(),
+                        timeoutText.text.toLongOrNull() ?: 20)
             }
         }
     }

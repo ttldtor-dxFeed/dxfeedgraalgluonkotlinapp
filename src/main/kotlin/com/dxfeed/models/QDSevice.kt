@@ -9,6 +9,8 @@ import java.util.concurrent.TimeUnit
 
 class QDService(private val logger: Logger) {
     suspend fun getLastQuoteByPromise(address: String, symbol: String, timeout: Long): Quote? = withContext(Dispatchers.IO) {
+        val calculatedTimout = if (timeout == 0L) 1000000 else timeout
+
         DXEndpoint.newBuilder()
                 .build()
                 .connect(address).use { endpoint ->
@@ -16,7 +18,7 @@ class QDService(private val logger: Logger) {
                         val promise = endpoint.feed
                                 .getLastEventPromise(Quote::class.java, symbol)
 
-                        if (!promise.awaitWithoutException(timeout, TimeUnit.SECONDS)) {
+                        if (!promise.awaitWithoutException(calculatedTimout, TimeUnit.SECONDS)) {
                             logger.log("QDService: getLastQuoteByPromise: timeout")
 
                             return@withContext null
@@ -28,6 +30,8 @@ class QDService(private val logger: Logger) {
     }
 
     suspend fun testQuoteSubscription(address: String, symbols: List<String>, timeout: Long) = withContext(Dispatchers.IO) {
+        val calculatedTimout = if (timeout == 0L) 1000000 else timeout
+
         logger.log("QDService: QuoteSub: Connecting")
         DXEndpoint.newBuilder()
                 .build()
@@ -40,7 +44,7 @@ class QDService(private val logger: Logger) {
                         }
                         sub.addSymbols(symbols)
 
-                        delay(timeout * 1000)
+                        delay(calculatedTimout * 1000)
 
                         logger.log("QDService: QuoteSub: Disconnecting")
                     }
