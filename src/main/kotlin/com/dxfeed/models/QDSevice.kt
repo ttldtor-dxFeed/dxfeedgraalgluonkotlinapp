@@ -40,10 +40,7 @@ class QDService(private val logger: Logger, private val speedometer: Speedometer
                 .connect(address).use { endpoint ->
                     endpoint.feed.createSubscription(Quote::class.java).use { sub ->
                         sub.addEventListener { items ->
-                            for (item in items) {
-                                //logger.log("QDService: QuoteSub: $item")
-                                speedometer.addEvent()
-                            }
+                            speedometer.addEvents(items.size.toLong())
                         }
                         sub.addSymbols(symbols)
 
@@ -64,10 +61,7 @@ class QDService(private val logger: Logger, private val speedometer: Speedometer
                     endpoint.feed.createTimeSeriesSubscription(TimeAndSale::class.java).use { sub ->
                         sub.fromTime = 0L
                         sub.addEventListener { items ->
-                            for (item in items) {
-                                //logger.log("QDService: TnsSub: $item")
-                                speedometer.addEvent()
-                            }
+                            speedometer.addEvents(items.size.toLong())
                         }
                         sub.addSymbols(symbols)
 

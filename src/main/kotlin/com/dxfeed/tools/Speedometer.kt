@@ -17,4 +17,8 @@ class Speedometer(logger: Logger, period: Long) {
     fun addEvent() {
         counter.incrementAndGet()
     }
+
+    fun addEvents(number: Long) {
+        counter.addAndGet(number)
+    }
 }

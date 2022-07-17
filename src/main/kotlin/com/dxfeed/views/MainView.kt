@@ -28,6 +28,7 @@ class MainView : View() {
 
     private val addressLabel = Label("Address:")
     private val addressText = TextField("demo.dxfeed.com:7300")
+    //private val addressText = TextField("192.168.0.149:8888")
 
     private val symbolsLabel = Label("Symbol(s):")
     private val symbolsText = TextField("AAPL, IBM, ETH/USD:GDAX")
