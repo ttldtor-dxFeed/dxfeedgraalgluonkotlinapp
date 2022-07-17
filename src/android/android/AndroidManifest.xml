@@ -1,0 +1,25 @@
+<?xml version='1.0'?>
+<manifest xmlns:android='http://schemas.android.com/apk/res/android' package='com.dxfeed.dxFeedGraalGluonKotlinApp' android:versionCode='1' android:versionName='1.0'>
+    <supports-screens android:xlargeScreens="true"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    
+    <application android:label='dxFeedGraalGluonKotlinApp' android:icon="@mipmap/ic_launcher">
+        <activity android:name='com.gluonhq.helloandroid.MainActivity' android:configChanges="orientation|keyboardHidden">
+             <intent-filter>
+                <category android:name='android.intent.category.LAUNCHER'/>
+                <action android:name='android.intent.action.MAIN'/>
+             </intent-filter>
+        </activity>
+        <activity android:name='com.gluonhq.helloandroid.PermissionRequestActivity'/>
+        <provider
+                android:name="androidx.core.content.FileProvider"
+                android:authorities="com.dxfeed.dxFeedGraalGluonKotlinApp.fileprovider"
+                android:exported="false"
+                android:grantUriPermissions="true">
+            <meta-data
+                    android:name="android.support.FILE_PROVIDER_PATHS"
+                    android:resource="@xml/file_provider_paths" />
+        </provider>
+    </application>
+</manifest>
+

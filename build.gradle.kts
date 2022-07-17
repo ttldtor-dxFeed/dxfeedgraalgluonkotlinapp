@@ -132,7 +132,9 @@ val toReflect = listOf(
         //misc
 
         //kotlin.random.Random
-        "kotlin.internal.jdk8.JDK8PlatformImplementations"
+        "kotlin.internal.jdk8.JDK8PlatformImplementations",
+
+        "com.devexperts.util.UnsafeHolder",
         )
 
 val buildProfile: String? by project
