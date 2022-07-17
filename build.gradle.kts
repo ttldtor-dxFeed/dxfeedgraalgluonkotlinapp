@@ -149,5 +149,6 @@ gluonfx {
     graalvmHome = graalVMHome
     reflectionList = toReflect
     jniList = toReflect
-    compilerArgs = listOf("--allow-incomplete-classpath")
+    compilerArgs = listOf("--allow-incomplete-classpath", "--add-opens java.base/jdk.internal.misc=ALL-UNNAMED")
+    runtimeArgs = listOf("--add-opens java.base/jdk.internal.misc=ALL-UNNAMED")
 }
