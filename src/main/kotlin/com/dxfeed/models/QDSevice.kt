@@ -2,6 +2,7 @@ package com.dxfeed.models
 
 import com.dxfeed.api.DXEndpoint
 import com.dxfeed.event.market.Quote
+import com.dxfeed.event.market.TimeAndSale
 import com.dxfeed.tools.Speedometer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -49,6 +50,30 @@ class QDService(private val logger: Logger, private val speedometer: Speedometer
                         delay(calculatedTimout * 1000)
 
                         logger.log("QDService: QuoteSub: Disconnecting")
+                    }
+                }
+    }
+
+    suspend fun testTnsSubscription(address: String, symbols: List<String>, timeout: Long) = withContext(Dispatchers.IO) {
+        val calculatedTimout = if (timeout == 0L) 1000000 else timeout
+
+        logger.log("QDService: TnsSub: Connecting")
+        DXEndpoint.newBuilder()
+                .build()
+                .connect(address).use { endpoint ->
+                    endpoint.feed.createTimeSeriesSubscription(TimeAndSale::class.java).use { sub ->
+                        sub.fromTime = 0L
+                        sub.addEventListener { items ->
+                            for (item in items) {
+                                //logger.log("QDService: TnsSub: $item")
+                                speedometer.addEvent()
+                            }
+                        }
+                        sub.addSymbols(symbols)
+
+                        delay(calculatedTimout * 1000)
+
+                        logger.log("QDService: TnsSub: Disconnecting")
                     }
                 }
     }

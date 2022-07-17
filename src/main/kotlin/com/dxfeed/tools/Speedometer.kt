@@ -10,7 +10,7 @@ class Speedometer(logger: Logger, period: Long) {
     private var countingTimer = timer("CountingTimer", false, 0L, period, action = {
         val eventsPerSecond = (counter.get() - lastCount.get()).toDouble() / period.toDouble() * 1000
 
-        logger.log("Speedometer: ${String.format("%.6f", eventsPerSecond)} events/s")
+        logger.log("Speedometer: ${String.format("%.3f", eventsPerSecond)} events/s")
         lastCount.set(counter.get())
     })
 

@@ -30,7 +30,7 @@ class MainView : View() {
     private val addressText = TextField("demo.dxfeed.com:7300")
 
     private val symbolsLabel = Label("Symbol(s):")
-    private val symbolsText = TextField("AAPL, IBM")
+    private val symbolsText = TextField("AAPL, IBM, ETH/USD:GDAX")
 
     private val timeoutLabel = Label("Timeout (sec)\n0 -- Inf/default):")
     private val timeoutText = TextField("0")
@@ -39,7 +39,8 @@ class MainView : View() {
 
     private val lastQuoteByPromiseButton = Button("LastQuoteByPromise")
     private val testQuoteSubscriptionButton = Button("TestQuoteSubscription")
-    private val controls = VBox(5.0, lastQuoteByPromiseButton, testQuoteSubscriptionButton)
+    private val testTnsSubscriptionButton = Button("TestTnsSubscription")
+    private val controls = VBox(5.0, lastQuoteByPromiseButton, testQuoteSubscriptionButton, testTnsSubscriptionButton)
 
     private val logView = ListView(logger.logObservableList)
     private val mainLayout = VBox(10.0, configGrid, controls, logView)
@@ -59,7 +60,7 @@ class MainView : View() {
         symbolsText.prefColumnCount = 20
         timeoutText.prefColumnCount = 20
 
-        for (b in listOf(lastQuoteByPromiseButton, testQuoteSubscriptionButton)) {
+        for (b in listOf(lastQuoteByPromiseButton, testQuoteSubscriptionButton, testTnsSubscriptionButton)) {
             b.prefWidth = 200.0
             b.prefHeight = 28.0
             b.style = "-fx-padding: -0.25em 0em -0.15em 0em;"
@@ -87,6 +88,13 @@ class MainView : View() {
         testQuoteSubscriptionButton.onAction = EventHandler {
             GlobalScope.launch(Dispatchers.JavaFx) {
                 qdService.testQuoteSubscription(addressText.text, symbolsText.text.splitSymbols(),
+                        timeoutText.text.toLongOrNull() ?: 20)
+            }
+        }
+
+        testTnsSubscriptionButton.onAction = EventHandler {
+            GlobalScope.launch(Dispatchers.JavaFx) {
+                qdService.testTnsSubscription(addressText.text, symbolsText.text.splitSymbols(),
                         timeoutText.text.toLongOrNull() ?: 20)
             }
         }

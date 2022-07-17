@@ -21,7 +21,9 @@ class Logger(private val logSize: Int) {
                 logObservableList.removeAt(logSize - 1)
             }
 
-            logObservableList.add(0, "${ZonedDateTime.now().format(DateTimeFormatter.ISO_LOCAL_TIME)} > $string")
+            val formatter = DateTimeFormatter.ofPattern("HH:mm:ss.SSS")
+
+            logObservableList.add(0, "${ZonedDateTime.now().format(formatter)} > $string")
         }
     }
 }
