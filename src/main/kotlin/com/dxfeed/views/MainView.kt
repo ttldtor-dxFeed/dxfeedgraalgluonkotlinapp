@@ -3,6 +3,7 @@ package com.dxfeed.views
 import com.dxfeed.extensions.splitSymbols
 import com.dxfeed.models.Logger
 import com.dxfeed.models.QDService
+import com.dxfeed.tools.Speedometer
 import com.gluonhq.charm.glisten.mvc.View
 import javafx.event.EventHandler
 import javafx.scene.control.Button
@@ -21,7 +22,8 @@ import kotlinx.coroutines.launch
 @OptIn(DelicateCoroutinesApi::class)
 class MainView : View() {
     private val logger = Logger(5000)
-    private val qdService = QDService(logger)
+    private val speedometer = Speedometer(logger, 5000)
+    private val qdService = QDService(logger, speedometer)
 
 
     private val addressLabel = Label("Address:")

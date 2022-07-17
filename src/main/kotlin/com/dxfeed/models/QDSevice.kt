@@ -2,12 +2,13 @@ package com.dxfeed.models
 
 import com.dxfeed.api.DXEndpoint
 import com.dxfeed.event.market.Quote
+import com.dxfeed.tools.Speedometer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
-class QDService(private val logger: Logger) {
+class QDService(private val logger: Logger, private val speedometer: Speedometer) {
     suspend fun getLastQuoteByPromise(address: String, symbol: String, timeout: Long): Quote? = withContext(Dispatchers.IO) {
         val calculatedTimout = if (timeout == 0L) 1000000 else timeout
 
@@ -39,7 +40,8 @@ class QDService(private val logger: Logger) {
                     endpoint.feed.createSubscription(Quote::class.java).use { sub ->
                         sub.addEventListener { items ->
                             for (item in items) {
-                                logger.log("QDService: QuoteSub: $item")
+                                //logger.log("QDService: QuoteSub: $item")
+                                speedometer.addEvent()
                             }
                         }
                         sub.addSymbols(symbols)
