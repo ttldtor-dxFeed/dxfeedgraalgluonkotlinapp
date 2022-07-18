@@ -30,7 +30,7 @@ export GRAALVM_HOME=/path/to/graalvm-svm-java11-linux-gluon-22.0.0.2-Final
 ### MacOS Native Build
 
 ```shell
-export GRAALVM_HOME=/path/to/graalvm-svm-java11-linux-gluon-22.0.0.2-Final
+export GRAALVM_HOME=/path/to/graalvm-svm-java11-linux-gluon-22.0.0.2-Final/Contents/Home
 ./gradlew clean build nativeBuild -PbuildProfile=ios
 ```
 
