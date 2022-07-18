@@ -10,6 +10,7 @@ https://www.graalvm.org/
 - OpenJDK 11
 
 Please use 22.0 version of a Gluon GraalVM and com.gluonhq.gluonfx-gradle-plugin 1.0.9
+[Abount GraalVM environment variables](https://graalvm.github.io/native-build-tools/0.9.6/graalvm-setup.html#_2_setting_up_environment_variables)
 
 ## How to build
 
