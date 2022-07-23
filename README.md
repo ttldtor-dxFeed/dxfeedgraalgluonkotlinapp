@@ -10,6 +10,7 @@ https://www.graalvm.org/
 - OpenJDK 11
 
 Please use 22.0 version of a Gluon GraalVM and com.gluonhq.gluonfx-gradle-plugin 1.0.9
+[Abount GraalVM environment variables](https://graalvm.github.io/native-build-tools/0.9.6/graalvm-setup.html#_2_setting_up_environment_variables)
 
 ## How to build
 
@@ -30,7 +31,7 @@ export GRAALVM_HOME=/path/to/graalvm-svm-java11-linux-gluon-22.0.0.2-Final
 ### MacOS Native Build
 
 ```shell
-export GRAALVM_HOME=/path/to/graalvm-svm-java11-linux-gluon-22.0.0.2-Final
+export GRAALVM_HOME=/path/to/graalvm-svm-java11-linux-gluon-22.0.0.2-Final/Contents/Home
 ./gradlew clean build nativeBuild -PbuildProfile=ios
 ```
 
