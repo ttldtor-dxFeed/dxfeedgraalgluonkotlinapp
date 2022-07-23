@@ -11,6 +11,7 @@ import javafx.scene.control.Label
 import javafx.scene.control.ListView
 import javafx.scene.control.TextField
 import javafx.scene.layout.GridPane
+import javafx.scene.layout.HBox
 import javafx.scene.layout.VBox
 import javafx.util.Callback
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -41,10 +42,12 @@ class MainView : View() {
     private val lastQuoteByPromiseButton = Button("LastQuoteByPromise")
     private val testQuoteSubscriptionButton = Button("TestQuoteSubscription")
     private val testTnsSubscriptionButton = Button("TestTnsSubscription")
-    private val controls = VBox(5.0, lastQuoteByPromiseButton, testQuoteSubscriptionButton, testTnsSubscriptionButton)
+    private val testNonTimeSeriesTnsSubscriptionButton = Button("TestNonTimeSeriesTnsSubscription")
+    private val controls = HBox(5.0, lastQuoteByPromiseButton, testQuoteSubscriptionButton)
+    private val controls2 = HBox(5.0, testTnsSubscriptionButton, testNonTimeSeriesTnsSubscriptionButton)
 
     private val logView = ListView(logger.logObservableList)
-    private val mainLayout = VBox(10.0, configGrid, controls, logView)
+    private val mainLayout = VBox(10.0, configGrid, controls, controls2, logView)
 
     init {
         configGrid.addRow(0, addressLabel, addressText)
@@ -61,7 +64,8 @@ class MainView : View() {
         symbolsText.prefColumnCount = 20
         timeoutText.prefColumnCount = 20
 
-        for (b in listOf(lastQuoteByPromiseButton, testQuoteSubscriptionButton, testTnsSubscriptionButton)) {
+        for (b in listOf(lastQuoteByPromiseButton, testQuoteSubscriptionButton, testTnsSubscriptionButton,
+                testNonTimeSeriesTnsSubscriptionButton)) {
             b.prefWidth = 200.0
             b.prefHeight = 28.0
             b.style = "-fx-padding: -0.25em 0em -0.15em 0em;"
@@ -96,6 +100,13 @@ class MainView : View() {
         testTnsSubscriptionButton.onAction = EventHandler {
             GlobalScope.launch(Dispatchers.JavaFx) {
                 qdService.testTnsSubscription(addressText.text, symbolsText.text.splitSymbols(),
+                        timeoutText.text.toLongOrNull() ?: 20)
+            }
+        }
+
+        testNonTimeSeriesTnsSubscriptionButton.onAction = EventHandler {
+            GlobalScope.launch(Dispatchers.JavaFx) {
+                qdService.testNonTimeSeriesTnsSubscription(addressText.text, symbolsText.text.splitSymbols(),
                         timeoutText.text.toLongOrNull() ?: 20)
             }
         }

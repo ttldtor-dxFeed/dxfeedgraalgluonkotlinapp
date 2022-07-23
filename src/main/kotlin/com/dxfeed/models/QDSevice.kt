@@ -71,4 +71,24 @@ class QDService(private val logger: Logger, private val speedometer: Speedometer
                     }
                 }
     }
+
+    suspend fun testNonTimeSeriesTnsSubscription(address: String, symbols: List<String>, timeout: Long) = withContext(Dispatchers.IO) {
+        val calculatedTimout = if (timeout == 0L) 1000000 else timeout
+
+        logger.log("QDService: TnsNonTimeSeriesSub: Connecting")
+        DXEndpoint.newBuilder()
+                .build()
+                .connect(address).use { endpoint ->
+                    endpoint.feed.createSubscription(TimeAndSale::class.java).use { sub ->
+                        sub.addEventListener { items ->
+                            speedometer.addEvents(items.size.toLong())
+                        }
+                        sub.addSymbols(symbols)
+
+                        delay(calculatedTimout * 1000)
+
+                        logger.log("QDService: TnsNonTimeSeriesSub: Disconnecting")
+                    }
+                }
+    }
 }
