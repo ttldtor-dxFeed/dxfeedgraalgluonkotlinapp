@@ -1,12 +1,14 @@
 package com.dxfeed.views
 
 import com.dxfeed.extensions.splitSymbols
-import com.dxfeed.models.Logger
+import com.dxfeed.tools.Logger
 import com.dxfeed.models.QDService
+import com.dxfeed.tools.IncrementedParametersGapDetector
 import com.dxfeed.tools.Speedometer
 import com.gluonhq.charm.glisten.mvc.View
 import javafx.event.EventHandler
 import javafx.scene.control.Button
+import javafx.scene.control.CheckBox
 import javafx.scene.control.Label
 import javafx.scene.control.ListView
 import javafx.scene.control.TextField
@@ -24,12 +26,13 @@ import kotlinx.coroutines.launch
 class MainView : View() {
     private val logger = Logger(5000)
     private val speedometer = Speedometer(logger, 5000)
-    private val qdService = QDService(logger, speedometer)
+    private val gapDetector = IncrementedParametersGapDetector(logger, false)
+    private val qdService = QDService(logger, speedometer, gapDetector)
 
 
     private val addressLabel = Label("Address:")
-    //private val addressText = TextField("demo.dxfeed.com:7300")
-    private val addressText = TextField("192.168.0.149:8888")
+    private val addressText = TextField("demo.dxfeed.com:7300")
+    //private val addressText = TextField("192.168.0.149:8888")
 
     private val symbolsLabel = Label("Symbol(s):")
     private val symbolsText = TextField("AAPL, IBM, ETH/USD:GDAX")
@@ -39,6 +42,8 @@ class MainView : View() {
 
     private val configGrid = GridPane()
 
+
+    private val enableTheGapDetectorCheckBox = CheckBox("Enable the GAP detector")
     private val lastQuoteByPromiseButton = Button("LastQuoteByPromise")
     private val testQuoteSubscriptionButton = Button("TestQuoteSubscription")
     private val testHistoryTnsSubscriptionButton = Button("TestHistoryTnsSubscription")
@@ -47,7 +52,7 @@ class MainView : View() {
     private val controls2 = HBox(5.0, testHistoryTnsSubscriptionButton, testStreamTnsSubscriptionButton)
 
     private val logView = ListView(logger.logObservableList)
-    private val mainLayout = VBox(10.0, configGrid, controls, controls2, logView)
+    private val mainLayout = VBox(10.0, configGrid, enableTheGapDetectorCheckBox, controls, controls2, logView)
 
     init {
         configGrid.addRow(0, addressLabel, addressText)
@@ -71,6 +76,8 @@ class MainView : View() {
             b.style = "-fx-padding: -0.25em 0em -0.15em 0em;"
         }
 
+        //enableTheGapDetectorCheckBox.prefHeight = 28.0
+
         center = mainLayout
         logView.prefWidth = prefWidth - 5
 
@@ -79,6 +86,10 @@ class MainView : View() {
         }
 
         logger.log("Initialization")
+
+        enableTheGapDetectorCheckBox.onAction = EventHandler {
+            gapDetector.enable(enableTheGapDetectorCheckBox.isSelected)
+        }
 
         lastQuoteByPromiseButton.onAction = EventHandler {
             GlobalScope.launch(Dispatchers.JavaFx) {

@@ -1,16 +1,17 @@
 package com.dxfeed.models
 
-import com.devexperts.logging.Logging
 import com.dxfeed.api.DXEndpoint
 import com.dxfeed.event.market.Quote
 import com.dxfeed.event.market.TimeAndSale
+import com.dxfeed.tools.IncrementedParametersGapDetector
+import com.dxfeed.tools.Logger
 import com.dxfeed.tools.Speedometer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import java.util.concurrent.TimeUnit
 
-class QDService(private val logger: Logger, private val speedometer: Speedometer) {
+class QDService(private val logger: Logger, private val speedometer: Speedometer, private val gapDetector: IncrementedParametersGapDetector) {
     suspend fun getLastQuoteByPromise(address: String, symbol: String, timeout: Long): Quote? = withContext(Dispatchers.IO) {
         val calculatedTimout = if (timeout == 0L) 1000000 else timeout
 
@@ -63,6 +64,9 @@ class QDService(private val logger: Logger, private val speedometer: Speedometer
                         sub.fromTime = 0L
                         sub.addEventListener { items ->
                             speedometer.addEvents(items.size.toLong())
+                            items.forEach {
+                                gapDetector.check("TnsHistorySub", it::getPrice)
+                            }
                         }
                         sub.addSymbols(symbols)
 
@@ -83,6 +87,9 @@ class QDService(private val logger: Logger, private val speedometer: Speedometer
                     endpoint.feed.createSubscription(TimeAndSale::class.java).use { sub ->
                         sub.addEventListener { items ->
                             speedometer.addEvents(items.size.toLong())
+                            items.forEach {
+                                gapDetector.check("TnsStreamSub", it::getPrice)
+                            }
                         }
                         sub.addSymbols(symbols)
 

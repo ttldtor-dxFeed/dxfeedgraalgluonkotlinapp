@@ -1,4 +1,4 @@
-package com.dxfeed.models
+package com.dxfeed.tools
 
 import javafx.collections.FXCollections
 import javafx.collections.ObservableList

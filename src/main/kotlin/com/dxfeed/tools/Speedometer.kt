@@ -1,6 +1,5 @@
 package com.dxfeed.tools
 
-import com.dxfeed.models.Logger
 import java.util.concurrent.atomic.AtomicLong
 import kotlin.concurrent.timer
 
