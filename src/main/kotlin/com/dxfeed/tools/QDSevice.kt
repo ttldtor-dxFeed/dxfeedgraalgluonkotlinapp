@@ -1,17 +1,22 @@
 package com.dxfeed.models
 
+import com.devexperts.logging.Logging
 import com.dxfeed.api.DXEndpoint
 import com.dxfeed.event.market.Quote
 import com.dxfeed.event.market.TimeAndSale
 import com.dxfeed.tools.IncrementedParametersGapDetector
 import com.dxfeed.tools.Logger
 import com.dxfeed.tools.Speedometer
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.util.concurrent.TimeUnit
 
-class QDService(private val logger: Logger, private val speedometer: Speedometer, private val gapDetector: IncrementedParametersGapDetector) {
+@OptIn(DelicateCoroutinesApi::class)
+class QDService(private val logger: Logger, private val speedometer: Speedometer, private val gapDetector: IncrementedParametersGapDetector, private var qdEventLoggingEnabled: Boolean) {
+    private val qdLogger = Logging.getLogging(QDService::class.java)
+    private val mutex = Mutex()
+
     suspend fun getLastQuoteByPromise(address: String, symbol: String, timeout: Long): Quote? = withContext(Dispatchers.IO) {
         val calculatedTimout = if (timeout == 0L) 1000000 else timeout
 
@@ -43,11 +48,20 @@ class QDService(private val logger: Logger, private val speedometer: Speedometer
                     endpoint.feed.createSubscription(Quote::class.java).use { sub ->
                         sub.addEventListener { items ->
                             speedometer.addEvents(items.size.toLong())
+
+                            GlobalScope.launch(Dispatchers.IO) {
+                                mutex.withLock {
+                                    if (qdEventLoggingEnabled) {
+                                        items.forEach {
+                                            qdLogger.info("QuoteSub: $it")
+                                        }
+                                    }
+                                }
+                            }
                         }
+
                         sub.addSymbols(symbols)
-
                         delay(calculatedTimout * 1000)
-
                         logger.log("QDService: QuoteSub: Disconnecting")
                     }
                 }
@@ -65,6 +79,14 @@ class QDService(private val logger: Logger, private val speedometer: Speedometer
                         sub.addEventListener { items ->
                             speedometer.addEvents(items.size.toLong())
                             items.forEach {
+                                GlobalScope.launch(Dispatchers.IO) {
+                                    mutex.withLock {
+                                        if (qdEventLoggingEnabled) {
+                                            qdLogger.info("TnsHistorySub: $it")
+                                        }
+                                    }
+                                }
+
                                 gapDetector.check("TnsHistorySub", it::getPrice)
                             }
                         }
@@ -88,6 +110,14 @@ class QDService(private val logger: Logger, private val speedometer: Speedometer
                         sub.addEventListener { items ->
                             speedometer.addEvents(items.size.toLong())
                             items.forEach {
+                                GlobalScope.launch(Dispatchers.IO) {
+                                    mutex.withLock {
+                                        if (qdEventLoggingEnabled) {
+                                            qdLogger.info("TnsStreamSub: $it")
+                                        }
+                                    }
+                                }
+
                                 gapDetector.check("TnsStreamSub", it::getPrice)
                             }
                         }
@@ -98,5 +128,13 @@ class QDService(private val logger: Logger, private val speedometer: Speedometer
                         logger.log("QDService: TnsStreamSub: Disconnecting")
                     }
                 }
+    }
+
+    fun enableQDEventsLogging(e : Boolean) {
+        GlobalScope.launch(Dispatchers.IO) {
+            mutex.withLock {
+                qdEventLoggingEnabled = e;
+            }
+        }
     }
 }

@@ -27,7 +27,7 @@ class MainView : View() {
     private val logger = Logger(5000)
     private val speedometer = Speedometer(logger, 5000)
     private val gapDetector = IncrementedParametersGapDetector(logger, false)
-    private val qdService = QDService(logger, speedometer, gapDetector)
+    private val qdService = QDService(logger, speedometer, gapDetector, false)
 
 
     private val addressLabel = Label("Address:")
@@ -44,15 +44,17 @@ class MainView : View() {
 
 
     private val enableTheGapDetectorCheckBox = CheckBox("Enable the GAP detector")
+    private val enableQDEventsLoggingCheckBox = CheckBox("Enable QD events logging")
     private val lastQuoteByPromiseButton = Button("LastQuoteByPromise")
     private val testQuoteSubscriptionButton = Button("TestQuoteSubscription")
     private val testHistoryTnsSubscriptionButton = Button("TestHistoryTnsSubscription")
     private val testStreamTnsSubscriptionButton = Button("TestStreamTnsSubscription")
+    private val checkboxes = HBox(5.0, enableTheGapDetectorCheckBox, enableQDEventsLoggingCheckBox)
     private val controls = HBox(5.0, lastQuoteByPromiseButton, testQuoteSubscriptionButton)
     private val controls2 = HBox(5.0, testHistoryTnsSubscriptionButton, testStreamTnsSubscriptionButton)
 
     private val logView = ListView(logger.logObservableList)
-    private val mainLayout = VBox(10.0, configGrid, enableTheGapDetectorCheckBox, controls, controls2, logView)
+    private val mainLayout = VBox(10.0, configGrid, checkboxes, controls, controls2, logView)
 
     init {
         configGrid.addRow(0, addressLabel, addressText)
@@ -76,8 +78,6 @@ class MainView : View() {
             b.style = "-fx-padding: -0.25em 0em -0.15em 0em;"
         }
 
-        //enableTheGapDetectorCheckBox.prefHeight = 28.0
-
         center = mainLayout
         logView.prefWidth = prefWidth - 5
 
@@ -89,6 +89,10 @@ class MainView : View() {
 
         enableTheGapDetectorCheckBox.onAction = EventHandler {
             gapDetector.enable(enableTheGapDetectorCheckBox.isSelected)
+        }
+
+        enableQDEventsLoggingCheckBox.onAction = EventHandler {
+            qdService.enableQDEventsLogging(enableQDEventsLoggingCheckBox.isSelected)
         }
 
         lastQuoteByPromiseButton.onAction = EventHandler {

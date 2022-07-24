@@ -1,6 +1,5 @@
 package com.dxfeed.tools
 
-import jdk.jfr.Enabled
 import kotlinx.coroutines.*
 import kotlinx.coroutines.javafx.JavaFx
 import kotlinx.coroutines.sync.Mutex
@@ -14,7 +13,7 @@ class IncrementedParametersGapDetector(private val logger: Logger, private var e
     private var firstCheck = true
 
     fun check(id: String, paramGetter: () -> Number) {
-        GlobalScope.launch(Dispatchers.JavaFx) {
+        GlobalScope.launch(Dispatchers.IO) {
             mutex.withLock {
                 if (!enabled) {
                     return@launch
@@ -25,7 +24,7 @@ class IncrementedParametersGapDetector(private val logger: Logger, private var e
 
                 if (lastValue != null) {
                     if (abs(1.0 - abs(currentValue.toDouble() - lastValue.toDouble())) > 0.000001) {
-                        logger.log("GapDetector: $id: ${"%.6f".format(lastValue)} - ${"%.6f".format(currentValue)} != 1")
+                        logger.log("GapDetector: $id: ${"%.3f".format(lastValue)} - ${"%.3f".format(currentValue)}")
                     }
                 } else {
                     firstCheck = false
