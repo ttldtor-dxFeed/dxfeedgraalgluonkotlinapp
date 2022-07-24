@@ -28,8 +28,8 @@ class MainView : View() {
 
 
     private val addressLabel = Label("Address:")
-    private val addressText = TextField("demo.dxfeed.com:7300")
-    //private val addressText = TextField("192.168.0.149:8888")
+    //private val addressText = TextField("demo.dxfeed.com:7300")
+    private val addressText = TextField("192.168.0.149:8888")
 
     private val symbolsLabel = Label("Symbol(s):")
     private val symbolsText = TextField("AAPL, IBM, ETH/USD:GDAX")
@@ -41,10 +41,10 @@ class MainView : View() {
 
     private val lastQuoteByPromiseButton = Button("LastQuoteByPromise")
     private val testQuoteSubscriptionButton = Button("TestQuoteSubscription")
-    private val testTnsSubscriptionButton = Button("TestTnsSubscription")
-    private val testNonTimeSeriesTnsSubscriptionButton = Button("TestNonTimeSeriesTnsSubscription")
+    private val testHistoryTnsSubscriptionButton = Button("TestHistoryTnsSubscription")
+    private val testStreamTnsSubscriptionButton = Button("TestStreamTnsSubscription")
     private val controls = HBox(5.0, lastQuoteByPromiseButton, testQuoteSubscriptionButton)
-    private val controls2 = HBox(5.0, testTnsSubscriptionButton, testNonTimeSeriesTnsSubscriptionButton)
+    private val controls2 = HBox(5.0, testHistoryTnsSubscriptionButton, testStreamTnsSubscriptionButton)
 
     private val logView = ListView(logger.logObservableList)
     private val mainLayout = VBox(10.0, configGrid, controls, controls2, logView)
@@ -64,8 +64,8 @@ class MainView : View() {
         symbolsText.prefColumnCount = 20
         timeoutText.prefColumnCount = 20
 
-        for (b in listOf(lastQuoteByPromiseButton, testQuoteSubscriptionButton, testTnsSubscriptionButton,
-                testNonTimeSeriesTnsSubscriptionButton)) {
+        for (b in listOf(lastQuoteByPromiseButton, testQuoteSubscriptionButton, testHistoryTnsSubscriptionButton,
+                testStreamTnsSubscriptionButton)) {
             b.prefWidth = 200.0
             b.prefHeight = 28.0
             b.style = "-fx-padding: -0.25em 0em -0.15em 0em;"
@@ -97,16 +97,16 @@ class MainView : View() {
             }
         }
 
-        testTnsSubscriptionButton.onAction = EventHandler {
+        testHistoryTnsSubscriptionButton.onAction = EventHandler {
             GlobalScope.launch(Dispatchers.JavaFx) {
-                qdService.testTnsSubscription(addressText.text, symbolsText.text.splitSymbols(),
+                qdService.testHistoryTnsSubscription(addressText.text, symbolsText.text.splitSymbols(),
                         timeoutText.text.toLongOrNull() ?: 20)
             }
         }
 
-        testNonTimeSeriesTnsSubscriptionButton.onAction = EventHandler {
+        testStreamTnsSubscriptionButton.onAction = EventHandler {
             GlobalScope.launch(Dispatchers.JavaFx) {
-                qdService.testNonTimeSeriesTnsSubscription(addressText.text, symbolsText.text.splitSymbols(),
+                qdService.testStreamTnsSubscription(addressText.text, symbolsText.text.splitSymbols(),
                         timeoutText.text.toLongOrNull() ?: 20)
             }
         }

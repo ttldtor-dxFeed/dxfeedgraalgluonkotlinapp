@@ -1,5 +1,6 @@
 package com.dxfeed.models
 
+import com.devexperts.logging.Logging
 import com.dxfeed.api.DXEndpoint
 import com.dxfeed.event.market.Quote
 import com.dxfeed.event.market.TimeAndSale
@@ -51,10 +52,10 @@ class QDService(private val logger: Logger, private val speedometer: Speedometer
                 }
     }
 
-    suspend fun testTnsSubscription(address: String, symbols: List<String>, timeout: Long) = withContext(Dispatchers.IO) {
+    suspend fun testHistoryTnsSubscription(address: String, symbols: List<String>, timeout: Long) = withContext(Dispatchers.IO) {
         val calculatedTimout = if (timeout == 0L) 1000000 else timeout
 
-        logger.log("QDService: TnsSub: Connecting")
+        logger.log("QDService: TnsHistorySub: Connecting")
         DXEndpoint.newBuilder()
                 .build()
                 .connect(address).use { endpoint ->
@@ -67,15 +68,15 @@ class QDService(private val logger: Logger, private val speedometer: Speedometer
 
                         delay(calculatedTimout * 1000)
 
-                        logger.log("QDService: TnsSub: Disconnecting")
+                        logger.log("QDService: TnsHistorySub: Disconnecting")
                     }
                 }
     }
 
-    suspend fun testNonTimeSeriesTnsSubscription(address: String, symbols: List<String>, timeout: Long) = withContext(Dispatchers.IO) {
+    suspend fun testStreamTnsSubscription(address: String, symbols: List<String>, timeout: Long) = withContext(Dispatchers.IO) {
         val calculatedTimout = if (timeout == 0L) 1000000 else timeout
 
-        logger.log("QDService: TnsNonTimeSeriesSub: Connecting")
+        logger.log("QDService: TnsStreamSub: Connecting")
         DXEndpoint.newBuilder()
                 .build()
                 .connect(address).use { endpoint ->
@@ -87,7 +88,7 @@ class QDService(private val logger: Logger, private val speedometer: Speedometer
 
                         delay(calculatedTimout * 1000)
 
-                        logger.log("QDService: TnsNonTimeSeriesSub: Disconnecting")
+                        logger.log("QDService: TnsStreamSub: Disconnecting")
                     }
                 }
     }
