@@ -31,21 +31,21 @@ export GRAALVM_HOME=/path/to/graalvm-svm-java11-linux-gluon-22.0.0.2-Final
 ### MacOS Native Build
 
 ```shell
-export GRAALVM_HOME=/path/to/graalvm-svm-java11-linux-gluon-22.0.0.2-Final/Contents/Home
+export GRAALVM_HOME=/path/to/graalvm-svm-java11-darwin-gluon-22.0.0.2-Final/Contents/Home
 ./gradlew clean build nativeBuild -PbuildProfile=ios
 ```
 
 ### Win Native Build (PowerShell)
 
 ```shell
-$env:GRAALVM_HOME = '/path/to/graalvm-svm-java11-linux-gluon-22.0.0.2-Final'
+$env:GRAALVM_HOME = '/path/to/graalvm-svm-java11-windows-gluon-22.0.0.2-Final'
 ./gradlew clean build nativeBuild -PbuildProfile=android
 ```
 
 ### Win Native Build (cmd)
 
 ```shell
-set GRAALVM_HOME='/path/to/graalvm-svm-java11-linux-gluon-22.0.0.2-Final'
+set GRAALVM_HOME='/path/to/graalvm-svm-java11-windows-gluon-22.0.0.2-Final'
 gradlew clean build nativeBuild -PbuildProfile=android
 ```
 
